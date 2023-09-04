@@ -56,10 +56,8 @@ async function update(req, res, next) {
   try {
     const contactId = req.params.id;
 
-    const { error, value } = await contactSchema.validate(req.body);
-    if (!req.body) {
-      return res.status(400).json({ message: "missing fields" });
-    }
+      const { error, value } = await contactSchema.validate(req.body);
+    
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
