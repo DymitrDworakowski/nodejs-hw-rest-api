@@ -1,20 +1,20 @@
-function validateContactFields(req, res, next) {
-  const { name, email, phone } = req.body;
+// function validateContactFields(req, res, next) {
+//   const { name, email, phone } = req.body;
 
-  if (!name) {
-    return res.status(400).json({ message: "missing required name field" });
-  }
+//   if (!name) {
+//     return res.status(400).json({ message: "missing required name field" });
+//   }
 
-  if (!email) {
-    return res.status(400).json({ message: "missing required email field" });
-  }
+//   if (!email) {
+//     return res.status(400).json({ message: "missing required email field" });
+//   }
 
-  if (!phone) {
-    return res.status(400).json({ message: "missing required phone field" });
-  }
+//   if (!phone) {
+//     return res.status(400).json({ message: "missing required phone field" });
+//   }
 
-  next();
-}
+//   next();
+// }
 
 const checkBody = (req, res, next) => {
   const body = req.body;
@@ -23,5 +23,4 @@ const checkBody = (req, res, next) => {
   }
   next();
 };
-
-module.exports = { validateContactFields, checkBody };
+module.exports =  checkBody;

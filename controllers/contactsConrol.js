@@ -1,6 +1,6 @@
 const Contact = require("..//models/contactsSchema");
-const ContactSchema = require("../schemas/schemas");
-const IdSchema = require("../schemas/schemasId");
+const CheckBody = require("../schemas/schemas");
+const FavoriteSchema = require("../schemas/schemaFavorite");
 
 async function getAll(req, res, next) {
   try {
@@ -12,13 +12,12 @@ async function getAll(req, res, next) {
 }
 
 async function add(req, res, next) {
-  const { error, value } = ContactSchema.validate(req.body);
+  const { error, value } = CheckBody.validate(req.body);
   if (error) {
     return res.status(400).json({ message: error.message });
   }
   try {
     const addCon = await Contact.create(value);
-    console.log(value);
     res.status(201).json(addCon);
   } catch (err) {
     next(err);
@@ -27,14 +26,8 @@ async function add(req, res, next) {
 
 async function getById(req, res, next) {
   try {
-    const validationResult = IdSchema.getContact.validate(req.params);
+    const { id } = req.params;
 
-    if (validationResult.error) {
-      return res.status(400).json({ message: "missing field Id " });
-    }
-
-    const { id } = validationResult.value;
-    
     const byId = await Contact.findById(id).exec();
 
     if (byId === null) {
@@ -48,7 +41,7 @@ async function getById(req, res, next) {
 }
 
 const update = async (req, res, next) => {
-  const { error, value } = ContactSchema.validate(req.body);
+  const { error, value } = CheckBody.validate(req.body);
 
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
@@ -62,22 +55,26 @@ const update = async (req, res, next) => {
     if (upContact === null) {
       return res.status(404).send({ message: "Contact not found" });
     }
-    res.json( upContact);
+    res.json(upContact);
   } catch (err) {
     next(err);
   }
 };
 
 const updateFavorite = async (req, res, next) => {
+  const { error, value } = FavoriteSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.message });
+  }
   const { id } = req.params;
-  const body = { favorite: req.body.favorite };
+  const body = { favorite: value.favorite };
   try {
-    await Contact.findByIdAndUpdate(id, body, {
+    const newFavorite = await Contact.findByIdAndUpdate(id, body, {
       new: true,
     }).exec();
 
-    if (body.favorite === undefined) {
-      return res.status(404).send({ message: "missing field favorite" });
+    if (newFavorite === null) {
+      return res.status(404).send({ message: "Not found" });
     }
 
     return res.json(await Contact.findById(id).exec());
@@ -87,20 +84,13 @@ const updateFavorite = async (req, res, next) => {
 };
 
 async function remove(req, res, next) {
-  
   try {
-    const validationResult = IdSchema.getContact.validate(req.params);
-
-    if (validationResult.error) {
-      return res.status(400).json({ message: "missing field Id " });
-    }
-
-    const { id } = validationResult.value;
+    const { id } = req.params;
     const removeId = await Contact.findByIdAndDelete(id).exec();
     if (removeId === null) {
       return res.status(404).send({ message: "Not found" });
     }
-    res.status(200).json({message: "Contact deleted"});
+    res.status(200).json({ message: "Contact deleted" });
   } catch (err) {
     next(err);
   }
