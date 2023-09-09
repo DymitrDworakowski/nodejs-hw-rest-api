@@ -1,3 +1,4 @@
+
 const checkBody = (req, res, next) => {
   const body = req.body;
   if (Object.keys(body).length === 0) {
@@ -5,4 +6,4 @@ const checkBody = (req, res, next) => {
   }
   next();
 };
-module.exports = checkBody;
+module.exports =  checkBody;
