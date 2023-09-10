@@ -3,8 +3,10 @@ const CheckBody = require("../schemas/schemas");
 const FavoriteSchema = require("../schemas/schemaFavorite");
 
 async function getAll(req, res, next) {
+  console.log(req.user);
   try {
-    const allContats = await Contact.find().exec();
+    // const allContats = await Contact.find().exec();
+    const allContats = await Contact.find({ owner: req.user.id }).exec();
     res.send(allContats);
   } catch (err) {
     next(err);
@@ -17,7 +19,10 @@ async function add(req, res, next) {
     return res.status(400).json({ message: error.message });
   }
   try {
-    const addCon = await Contact.create(value);
+    const addCon = await Contact.create({
+      ...value,
+      owner: req.user.id,
+    });
     res.status(201).json(addCon);
   } catch (err) {
     next(err);
@@ -31,6 +36,9 @@ async function getById(req, res, next) {
     const byId = await Contact.findById(id).exec();
 
     if (byId === null) {
+      return res.status(404).send({ message: "Contact not found" });
+    }
+    if (byId.owner.toString() !== req.user.id) {
       return res.status(404).send({ message: "Contact not found" });
     }
 
@@ -55,6 +63,9 @@ const update = async (req, res, next) => {
     if (upContact === null) {
       return res.status(404).send({ message: "Contact not found" });
     }
+    if (upContact.owner.toString() !== req.user.id) {
+      return res.status(404).send({ message: "Contact not found" });
+    }
     res.json(upContact);
   } catch (err) {
     next(err);
@@ -76,6 +87,9 @@ const updateFavorite = async (req, res, next) => {
     if (newFavorite === null) {
       return res.status(404).send({ message: "Not found" });
     }
+    if (newFavorite.owner.toString() !== req.user.id) {
+      return res.status(404).send({ message: "Contact not found" });
+    }
 
     return res.json(await Contact.findById(id).exec());
   } catch (error) {
@@ -90,7 +104,11 @@ async function remove(req, res, next) {
     if (removeId === null) {
       return res.status(404).send({ message: "Not found" });
     }
-    res.status(200).json({ message: "Contact deleted" });
+    if (removeId.owner.toString() !== req.user.id) {
+      return res.status(404).send({ message: "Contact not found" });
+    }
+
+    return res.status(200).json({ message: "Contact deleted" });
   } catch (err) {
     next(err);
   }
