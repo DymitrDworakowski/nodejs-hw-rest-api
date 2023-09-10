@@ -76,7 +76,7 @@ async function login(req, res, next) {
 async function logout(req, res, next) {
   try {
     await userSchema.findByIdAndUpdate(req.user.id, { token: null }).exec();
-    res.status(204).send({ massege: "You must be logged out" });
+    res.status(204);
   } catch (err) {
     next(err);
   }
