@@ -18,8 +18,7 @@ app.use("/api/contacts", auth, contactsRouter);
 app.use("/users", routerUsers);
 app.use(
   "/avatars",
-  express.static(path.join("public/avatars")),
-  routerUsers
+  express.static(path.join("public/avatars"))
 );
 
 app.use((req, res) => {
