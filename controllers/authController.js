@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 const gravatar = require('gravatar');
+const { prototype } = require("node:stream");
 
 async function register(req, res, next) {
   const { error, value } = userJoi.validate(req.body);
@@ -22,6 +23,7 @@ async function register(req, res, next) {
     const passwordHash = await bcrypt.hash(value.password, 10);
 
     const newUser = await userSchema.create({
+      avatarURL:avatarURL,
       email: value.email,
       password: passwordHash,
     });
@@ -107,21 +109,23 @@ async function uploadAvatars(req, res, next) {
       req.file.path,
       path.join("public/avatars", req.file.filename)
     );
-    
+    const PORT = process.env.PORT || 3000;
     const user = await userSchema
       .findByIdAndUpdate(
         req.user.id,
-        { avatarURL: req.file.filename },
+        { avatarURL: `http://localhost:${PORT}/avatars/${req.file.filename}`},
         { new: true }
       )
       .exec();
     if (user === null) {
       res.status(404).send({ message: "User not found" });
     }
-    res.status(200).send(user);
+    
+    res.status(200).send({avatarURL:user.avatarURL});
   } catch (err) {
     next(err);
   }
 }
+
 
 module.exports = { register, login, logout, current, uploadAvatars };
