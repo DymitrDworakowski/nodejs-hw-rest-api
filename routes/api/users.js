@@ -8,11 +8,16 @@ const AuthController = require("../../controllers/authController");
 
 routerUsers.post("/register", AuthController.register);
 routerUsers.post("/login", AuthController.login);
-routerUsers.post("/logout", authMid, AuthController.logout);
 routerUsers.get("/current", authMid, AuthController.current);
+routerUsers.post("/logout", authMid, AuthController.logout);
 routerUsers.patch(
-  "/avatars",authMid,
-  upload.single("avatars"),resizeImage,
+  "/avatars",
+  authMid,
+  upload.single("avatars"),
+  resizeImage,
   AuthController.uploadAvatars
 );
+routerUsers.get("/verify/:verificationToken", AuthController.verify);
+routerUsers.post("/verify",AuthController.verifyEmail);
+
 module.exports = routerUsers;
