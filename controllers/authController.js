@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 const gravatar = require('gravatar');
-const { prototype } = require("node:stream");
+
 
 async function register(req, res, next) {
   const { error, value } = userJoi.validate(req.body);
@@ -113,7 +113,7 @@ async function uploadAvatars(req, res, next) {
     const user = await userSchema
       .findByIdAndUpdate(
         req.user.id,
-        { avatarURL: `http://localhost:${PORT}/avatars/${req.file.filename}`},
+        { avatarURL: `avatars/${req.file.filename}`},
         { new: true }
       )
       .exec();
@@ -121,7 +121,7 @@ async function uploadAvatars(req, res, next) {
       res.status(404).send({ message: "User not found" });
     }
     
-    res.status(200).send({avatarURL:user.avatarURL});
+    res.status(200).send({avatarURL:`http://localhost:${PORT}/${user.avatarURL}`});
   } catch (err) {
     next(err);
   }
