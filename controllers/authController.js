@@ -180,6 +180,9 @@ console.log(email);
       return res.status(400).send({ message: "missing required field email" });
     }
     const user = await userSchema.findOne(email).exec();
+    if(!user) {
+      return res.status(400).send({ message: "User with this email does not exist" });
+    }
     if (user.verify !== false) {
       return res
         .status(400)
