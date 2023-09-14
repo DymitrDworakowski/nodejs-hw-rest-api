@@ -174,7 +174,6 @@ async function verifyEmail(req, res, next) {
     return res.status(400).json({ message: error.message });
   }
   const email = value;
-console.log(email);
   try {
     if (email === undefined) {
       return res.status(400).send({ message: "missing required field email" });
