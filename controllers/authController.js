@@ -4,8 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("node:fs/promises");
 const path = require("node:path");
-const gravatar = require('gravatar');
-
+const gravatar = require("gravatar");
 
 async function register(req, res, next) {
   const { error, value } = userJoi.validate(req.body);
@@ -15,7 +14,11 @@ async function register(req, res, next) {
 
   try {
     const user = await userSchema.findOne({ email: value.email });
-    const avatarURL = gravatar.url(user, { s: '200', r: 'g', d: 'monsterid' }, false);
+    const avatarURL = gravatar.url(
+      user,
+      { s: "200", r: "g", d: "monsterid" },
+      false
+    );
     if (user !== null) {
       return res.status(409).send({ message: "Email in use" });
     }
@@ -23,13 +26,14 @@ async function register(req, res, next) {
     const passwordHash = await bcrypt.hash(value.password, 10);
 
     const newUser = await userSchema.create({
-      avatarURL:avatarURL,
+      avatarURL: avatarURL,
+      name: value.name,
       email: value.email,
       password: passwordHash,
     });
 
     const responseUser = {
-      avatarURL:avatarURL,
+      avatarURL: avatarURL,
       email: newUser.email,
       subscription: newUser.subscription,
     };
@@ -113,19 +117,20 @@ async function uploadAvatars(req, res, next) {
     const user = await userSchema
       .findByIdAndUpdate(
         req.user.id,
-        { avatarURL: `avatars/${req.file.filename}`},
+        { avatarURL: `avatars/${req.file.filename}` },
         { new: true }
       )
       .exec();
     if (user === null) {
       res.status(404).send({ message: "User not found" });
     }
-    
-    res.status(200).send({avatarURL:`http://localhost:${PORT}/${user.avatarURL}`});
+
+    res
+      .status(200)
+      .send({ avatarURL: `http://localhost:${PORT}/${user.avatarURL}` });
   } catch (err) {
     next(err);
   }
 }
-
 
 module.exports = { register, login, logout, current, uploadAvatars };

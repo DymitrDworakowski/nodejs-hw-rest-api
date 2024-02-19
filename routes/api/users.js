@@ -11,8 +11,10 @@ routerUsers.post("/login", AuthController.login);
 routerUsers.post("/logout", authMid, AuthController.logout);
 routerUsers.get("/current", authMid, AuthController.current);
 routerUsers.patch(
-  "/avatars",authMid,
-  upload.single("avatars"),resizeImage,
+  "/avatars",
+  authMid,
+  upload.single("avatars"),
+  resizeImage,
   AuthController.uploadAvatars
 );
 module.exports = routerUsers;
