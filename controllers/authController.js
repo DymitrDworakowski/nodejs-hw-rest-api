@@ -1,5 +1,5 @@
 const userSchema = require("../models/user");
-const userJoi = require("../schemas/shemaUser");
+const { registerJoi, loginJoi } = require("../schemas/shemaUser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("node:fs/promises");
@@ -7,7 +7,7 @@ const path = require("node:path");
 const gravatar = require("gravatar");
 
 async function register(req, res, next) {
-  const { error, value } = userJoi.validate(req.body);
+  const { error, value } = registerJoi.validate(req.body);
   if (error) {
     return res.status(400).json({ message: error.message });
   }
@@ -45,7 +45,7 @@ async function register(req, res, next) {
 }
 
 async function login(req, res, next) {
-  const { error, value } = userJoi.validate(req.body);
+  const { error, value } = loginJoi.validate(req.body);
   if (error) {
     return res.status(400).json({ message: error.message });
   }
