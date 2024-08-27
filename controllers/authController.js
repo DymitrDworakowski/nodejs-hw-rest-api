@@ -87,7 +87,7 @@ async function login(req, res, next) {
 async function logout(req, res, next) {
   try {
     await userSchema.findByIdAndUpdate(req.user.id, { token: null }).exec();
-    res.status(204);
+    res.status(204).end();
   } catch (err) {
     next(err);
   }
