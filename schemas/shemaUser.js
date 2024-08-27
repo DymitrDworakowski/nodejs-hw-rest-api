@@ -3,7 +3,7 @@ const Joi = require("joi");
 const userJoi = Joi.object({
   name: Joi.string().required().messages({
     "string.base": `name should be a type of string`,
-    "string.empty": `missing required name field`,
+    // "string.empty": `missing required name field`,
     "any.required": `missing required name field`,
   }),
   email: Joi.string().required().messages({
