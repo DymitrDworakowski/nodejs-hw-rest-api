@@ -3,11 +3,27 @@ const CheckBody = require("../schemas/schemas");
 const FavoriteSchema = require("../schemas/schemaFavorite");
 
 async function getAll(req, res, next) {
-  console.log(req.user);
   try {
-    // const allContats = await Contact.find().exec();
-    const allContats = await Contact.find({ owner: req.user.id }).exec();
-    res.send(allContats);
+    const { page = 1, limit = 10 } = req.query; // Значення за замовчуванням
+    const pageInt = parseInt(page, 10); // Перетворюємо на число
+    const limitInt = parseInt(limit, 10); // Перетворюємо на число
+
+    // Отримуємо загальну кількість контактів для пагінації
+    const totalContacts = await Contact.countDocuments({ owner: req.user.id });
+
+    // Отримуємо контакти з пагінацією
+    const allContacts = await Contact.find({ owner: req.user.id })
+      .skip((pageInt - 1) * limitInt)
+      .limit(limitInt)
+      .exec();
+
+    // Відправляємо відповіді разом з інформацією про пагінацію
+    res.json({
+      contacts: allContacts,
+      totalContacts,
+      totalPages: Math.ceil(totalContacts / limitInt),
+      currentPage: pageInt,
+    });
   } catch (err) {
     next(err);
   }
