@@ -19,17 +19,17 @@ Joi: Validation library for request data.
 bcrypt: Password hashing for secure authentication.
 jsonwebtoken: Token-based authentication.
 ### Installation and Setup
-Clone the repository:
+- Clone the repository:
 `git clone https://github.com/DymitrDworakowski/nodejs-hw-rest-api.git`
-Navigate to the project directory:
+- Navigate to the project directory:
 `cd nodejs-hw-rest-api`
-Install dependencies:
+- Install dependencies:
 `npm install`
-Set up environment variables in a .env file:
+- Set up environment variables in a .env file:
 `MONGO_URI=<your_mongodb_connection_string>`
 `JWT_SECRET=<your_secret_key>`
 `PORT=3000`
-Start the server:
+- Start the server:
 `npm start`
 
 ### API Endpoints
@@ -42,7 +42,6 @@ Contacts Management:
 - POST /contacts: Create a new contact.
 - PUT /contacts/:id: Update an existing contact.
 - DELETE /contacts/:id: Remove a contact.
-- 
 ### Project Highlights
 This project demonstrates:
 
