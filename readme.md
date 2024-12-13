@@ -1,4 +1,4 @@
-## GoIT Node.js Course Template Homework
+##  Node.js backend Phonebook
 
 ### Project Description
 This repository contains a REST API backend built with Node.js. It serves as a foundation for managing user contacts, implementing authentication, and enabling CRUD operations. The project adheres to best practices in API development, making it scalable and secure.
